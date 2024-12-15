@@ -14,41 +14,41 @@ Note that human conversation isn't great here -- people talk over themselves. Wi
 
 ```
 00:00:08.000 --> 00:00:12.000
-(Danyel Fisher)
+(DF)
 I wanted to start with first is just a little bit of background so we know who we're talking
 
 00:00:12.000 --> 00:00:16.000
-(Danyel Fisher)
+(DF)
 to. Um what is your uh
 
 00:00:16.000 --> 00:00:20.000
-(Danyel Fisher)
+(DF)
 background?
 -
  
-(Dana Bettinger)
-Safaria wise or lifewise
+(DB)
+pickle wise or lifewise
 
 00:00:20.000 --> 00:00:24.000
-(Danyel Fisher)
-Um let's go with uh Jewish wise do you
+(DF)
+Um let's go with uh buggy wise do you
 -
  
-(Dana Bettinger)
-or Jewish
+(DB)
+or buggy
 ```
 
-which has the data, but what I want is more:
+which has the data, but what I want is more consolidated:
 
 ```
-Danyel Fisher (00:00:08.000)
+DF (00:00:08.000)
 I wanted to start with first is just a little bit of background so we know who we're talking to. Um what is your uh background?
  
-Dana Bettinger (00:090:16.000)
-Safaria wise or lifewise? or Jewish
+DB (00:090:16.000)
+pickle wise or lifewise? or buggy
 
-Danyel Fisher (00:00:20.000)
-Um let's go with uh Jewish wise do you
+DF (00:00:20.000)
+Um let's go with uh buggy wise do you
  ```
 
 
