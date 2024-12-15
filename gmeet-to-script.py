@@ -1,13 +1,13 @@
 import webvtt
-import json
-from datetime import datetime, timedelta
+from datetime import datetime
+import sys
+
 
 def time_to_timedelta(time_str): 
     time_format = "%H:%M:%S.%f" 
     return datetime.strptime(time_str, time_format) - datetime.strptime("00:00:00.000", time_format)
 
 def fix_vtt_format(lines):
-    
     fixed_lines = []
     i = 0;
     while( i < len(lines) ):
@@ -19,11 +19,11 @@ def fix_vtt_format(lines):
         i = i + 1;
     return ''.join( fixed_lines )
 
+file = sys.argv[1]
 # We are ussing google meet-like captions
 # a single "caption text" looks like:
 # (speaker)\nline
-x = 10
-vtt_data = open('sample.vtt').readlines()
+vtt_data = open(file).readlines()
 
 vtt_string = fix_vtt_format( vtt_data )
 
@@ -35,9 +35,12 @@ for caption in webvtt.from_string( vtt_string ):
         "text": caption.text
     })
 
-print( json.dumps( caps [0:10] )) 
+# Function to convert time string to timedelta
+def time_to_timedelta(time_str):
+    time_format = "%H:%M:%S.%f"
+    return datetime.strptime(time_str, time_format) - datetime.strptime("00:00:00.000", time_format)
 
-# my goal is to create an array of 
+# Split and consolidate statements
 consolidated_data = {}
 for entry in caps:
     text_blocks = entry["text"].split("\n-\n")
@@ -49,7 +52,6 @@ for entry in caps:
         if name not in consolidated_data:
             consolidated_data[name] = []
         consolidated_data[name].append({"start": start, "end": end, "text": statement.strip()})
-
 
 # Merge adjacent time blocks
 for name in consolidated_data:
@@ -67,7 +69,7 @@ for name in consolidated_data:
         merged_entries.append(previous_entry)
     consolidated_data[name] = merged_entries
 
-# Interleave conversations
+# Interleave conversations with less aggressive merging
 interleaved_data = []
 for name, entries in consolidated_data.items():
     for entry in entries:
@@ -76,5 +78,14 @@ for name, entries in consolidated_data.items():
 # Sort interleaved data by start time
 interleaved_data.sort(key=lambda x: time_to_timedelta(x["start"]))
 
-for entry in interleaved_data:
-    print(f"{entry['start']} - {entry['end']} ({entry['name']}): {entry['text']}")
+# Print the interleaved conversation with mid-response interjections
+for i in range(len(interleaved_data)):
+    current_entry = interleaved_data[i]
+    next_entry = interleaved_data[i + 1] if i + 1 < len(interleaved_data) else None
+    
+    print(f"{current_entry['start']} - {current_entry['end']} ({current_entry['name']}): {current_entry['text']}")
+    
+    if next_entry and time_to_timedelta(current_entry["end"]) < time_to_timedelta(next_entry["start"]):
+        continue
+    if next_entry and next_entry["name"] != current_entry["name"] and time_to_timedelta(current_entry["end"]) == time_to_timedelta(next_entry["start"]):
+        print(f"{next_entry['start']} - {next_entry['end']} ({next_entry['name']}): {next_entry['text']}")
